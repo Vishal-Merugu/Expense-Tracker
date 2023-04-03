@@ -1,5 +1,8 @@
 const User = require('../models/user');
 
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+
 const path = require("path");
 const rootDir = require('../util/path')
 
@@ -20,17 +23,18 @@ exports.postSignUp = (req,res,next) => {
             res.status(404).send()
         }
         else{
-            return User.create({
-                name : name,
-                email : email,
-                phone : phone,
-                password : password
+            bcrypt.hash(password,saltRounds,(err,hash) => {
+                return User.create({
+                    name : name,
+                    email : email,
+                    phone : phone,
+                    password : hash
+                })
+                .then((user) =>{
+                    res.send("/user/login")
+                })        
+                .catch(err => console.log(err))
             })
-            .then((user) =>{
-                res.send("/user/login")
-                
-            })
-            .catch(err => console.log(err))
         }
     })
 }
@@ -49,11 +53,15 @@ exports.postLogin = (req,res,next) => {
         if(!user){
             res.status(404).send("User Not Found")
         }
-        else if (user.password != password){
-            res.status(401).send("Password Doesn't Match")
-        }
-        else if (user.password == password){
-            res.send("user Found")
+        else{
+            bcrypt.compare(password,user.password, (err,result) => {
+                if(result){
+                    res.send("user Found")
+                }
+                else{
+                    res.status(401).send("Password Doesn't Match")
+                }
+            })
         }
     })
 }
