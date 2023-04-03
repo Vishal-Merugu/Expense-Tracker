@@ -9,10 +9,10 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #E8F5F0;
+
 }
 
-.signup{
+.login{
     width : 360px;
     background-color: white;
     height: min-content;
@@ -21,16 +21,16 @@ body{
     box-shadow: 12px 10px #c9dbd4 ;
 }
 
-.signup h1{
+.login h1{
     font-size: 36px;
     margin-bottom: 25px;
 }
 
-.signup form{
+.login form{
     font-size: 16px;
 }
 
-.signup form .form-group{
+.login form .form-group{
     margin-bottom: 12px;
 }
 
