@@ -16,8 +16,10 @@ document.addEventListener("DOMContentLoaded",()=>{
 
         axios
         .post(`${url}user/signup`,newUser)
-        .then(user => {
-            console.log("user created");
+        .then(res => {
+            const path = res.data;
+            document.location.pathname = path
+           
         })
         .catch(err => {
          document.querySelector('.alertu').innerHTML = `<div class="alert alert-danger alert-dismissible fade in">
@@ -25,6 +27,5 @@ document.addEventListener("DOMContentLoaded",()=>{
          </div>`
 
         })
-
     }
 })
