@@ -3,7 +3,8 @@ const url = "http://localhost:3000/"
 document.addEventListener("DOMContentLoaded",()=>{
     document.querySelector('.signup').onsubmit = (e) =>{
         e.preventDefault();
-        const name = document.querySelector("#name").value;        const email = document.querySelector("#email").value;
+        const name = document.querySelector("#name").value;        
+        const email = document.querySelector("#email").value;
         const phone = document.querySelector("#phone").value;
         const password = document.querySelector("#password").value;
         const newUser = {
@@ -16,10 +17,13 @@ document.addEventListener("DOMContentLoaded",()=>{
         axios
         .post(`${url}user/signup`,newUser)
         .then(user => {
-            console.log("user account has been created");
+            console.log("user created");
         })
         .catch(err => {
-            console.log(err)
+         document.querySelector('.alertu').innerHTML = `<div class="alert alert-danger alert-dismissible fade in">
+         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>User Already Exists
+         </div>`
+
         })
 
     }
