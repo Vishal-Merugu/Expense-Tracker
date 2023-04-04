@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
            const response = await axios.post(`${url}user/login`,user)
            if(response.status == 200){
                alert("User Logged in successfully")
+               window.location.href = "../expense/index.html"
            }else{
                 throw new Error("Login Failed")
            }

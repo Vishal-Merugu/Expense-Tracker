@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded",()=>{
          
             const response =await axios.post(`${url}user/signup`,newUser)
             if(response.status == 200){
+                alert("Account Created Successfully")
                 window.location.href = '../login/login.html'
             }
             else{

@@ -1,0 +1,49 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.navbar{
+     padding: 0.75rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #a63d8a;
+    /* font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; */
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+form{
+    border: 2px solid #DCDCDC;
+    padding: 1.5rem;
+    border-radius: 4px;
+    background-color : #fbfbfb;
+    box-shadow: 10px 10px 5px #d0d0d0;
+}
+
+#submit{
+    border-radius: 4px;
+    width:100%;
+    background-color: #B9C5C4;
+    color: black;
+}
+
+#submit:active{
+    background-color: grey;
+}
+
+ .expenses{
+    background-color:#BBE2DF;
+    border-radius:  4px;
+    padding: 0.5rem;
+    box-shadow: 6px 6px 4px #dcdcdc;
+}
+
+table{
+    background-color:#E3ECEB;
+    box-shadow: 6px 6px 4px #dcdcdc;
+}
+
+body{
+    background-color: #f8f8f8;
+}

@@ -3,9 +3,6 @@ const User = require('../models/user');
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
-const path = require("path");
-const rootDir = require('../util/path')
-
 exports.postSignUp = async (req,res,next) => {
     try{
         const { name, email, phone, password } = req.body
@@ -32,7 +29,6 @@ exports.postSignUp = async (req,res,next) => {
     }
 }
 
-
 exports.postLogin = async (req,res,next) => {
     try{
         const email = req.body.email;
@@ -48,7 +44,7 @@ exports.postLogin = async (req,res,next) => {
                     res.status(200).send("user Found")
                 }
                 else{
-                    res.status(401).send("Password Doesn't Match !!")
+                    res.status(401).send("Incorrect Password !!")
                 }
             })
         }
