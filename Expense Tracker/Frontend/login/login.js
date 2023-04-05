@@ -18,6 +18,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
     
            const response = await axios.post(`${url}user/login`,user)
            if(response.status == 200){
+                const token = response.data.token;
+               localStorage.setItem("token",token);
                alert("User Logged in successfully")
                window.location.href = "../expense/index.html"
            }else{
@@ -25,9 +27,8 @@ document.addEventListener("DOMContentLoaded", ()=>{
            }
         }
         catch(err){       
-            console.log(err);
             alertu.innerHTML = `<div class="alert alert-danger alert-dismissible fade in">
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>${err.response.data}
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>${err.response.data.message}
             </div>`
             setTimeout(() => document.querySelector('.alert').remove(),3000)
            }

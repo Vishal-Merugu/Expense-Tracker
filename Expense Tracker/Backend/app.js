@@ -2,7 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const sequelize = require('./util/database');
-const path = require('path')
+
+const User = require('./models/user');
+const Expense = require('./models/expense');
 
 const userRoutes = require('./routes/user')
 const expenseRoutes = require('./routes/expense');
@@ -16,8 +18,12 @@ app.use(cors())
 app.use('/user',userRoutes)
 app.use('/',expenseRoutes)
 
-sequelize.sync()
-// .then({force : true})
+Expense.belongsTo(User, {constraints : true, onDelete : "CASCADE"});
+User.hasMany(Expense)
+
+sequelize
+// .sync({force : true})
+.sync()
 .then(result => {
     app.listen(3000)
 })

@@ -6,20 +6,33 @@ const Description = document.querySelector('#description');
 const Category  = document.querySelector('#category');
 
 async function getExpense(id){
-    const response = await axios.get(`${url}/expense/${id}`);
-    const expense = response.data;
-    return expense
+    try{
+        const token = localStorage.getItem("token")
+        const response = await axios.get(`${url}/expense/${id}`,{headers : { Authorization : token}});
+        const expense = response.data;
+        return expense
+    }
+    catch(err){ 
+        console.log(err);
+    }
 }
 
 async function postExpense(obj){
-    const response = await axios.post(`${url}/expense`,obj)
-    showOutput(response.data)
+    try{
+        const token = localStorage.getItem("token")
+        const response = await axios.post(`${url}/expense`, obj,{headers : { Authorization : token}})
+        showOutput(response.data)
+    }
+    catch(err){
+        console.log(err);
+    }
 }
 
 async function deleteExpense(id){
     try{
+        const token = localStorage.getItem("token")
         document.getElementById(id).remove()
-        const response = await axios.delete(`${url}/expense/${id}`);
+        const response = await axios.delete(`${url}/expense/${id}`,{headers : { "Authorization" : token}});
     }
     catch(err){
         console.log(err);
@@ -28,7 +41,8 @@ async function deleteExpense(id){
 
 async function editExpense(expenseId, newExpense){
     try{
-        const response = await axios.put(`${url}/expense/${expenseId}`,newExpense)
+        const token = localStorage.getItem("token")
+        const response = await axios.put(`${url}/expense/${expenseId}`,newExpense, {headers : { Authorization : token}})
         const expense = response.data;
         document.getElementById('expenseId').value = ''
         showOutput(expense)
@@ -56,9 +70,10 @@ function showOutput(obj){
 }
 
 document.addEventListener("DOMContentLoaded", async ()=> {
-    
-    const response = await axios.get(`${url}/expenses`)
-    const expenses = response.data
+
+    const token = localStorage.getItem("token")
+    const response = await axios.get(`${url}/expenses`,{ headers : { "Authorization" : token}})
+    const expenses = response.data;
     expenses.forEach(expense => {
         showOutput(expense)
     });

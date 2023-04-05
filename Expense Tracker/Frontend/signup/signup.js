@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded",()=>{
         }
         catch(err){
             alertu.innerHTML = `<div class="alert alert-danger alert-dismissible fade in">
-             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>${err.response.data}
+             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>${err.response.data.message}
              </div>`
              setTimeout(()=> document.querySelector('.alert').remove(),3000)
         }
