@@ -61,3 +61,10 @@ exports.postLogin = async (req,res,next) => {
         console.log(err);
     }
 }
+
+exports.getPremium = (req,res,next) => {
+    const user = req.user;
+    if(user){
+        return res.status(200).json({isPremium : user.isPremium})
+    }
+}
