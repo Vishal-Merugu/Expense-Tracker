@@ -1,29 +1,5 @@
 const url = 'http://localhost:3000'
 
-const token = localStorage.getItem('token')
-const config = {
-    headers : {
-        Authorization : token
-    }
-}
-
-//login or logout  and signup in nav bar
-
-
-const login = document.querySelector('#login')
-const logout = document.querySelector('#logout')
-const signUp = document.querySelector('#signup')
-
-if(token){
-    login.style.display = 'none'
-    signUp.style.display = "none"
-}else{
-    logout.style.display = "none"
-}
-
-// end of login or logout signup in nav-bar
-
-
 async function premiumOrNot(){
     const response = await axios.get(`${url}/user/isPremium`,config)
     const isPremium = response.data.isPremium;
@@ -71,12 +47,6 @@ document.addEventListener("DOMContentLoaded", async() =>{
         })
     }
     
-
-    //logout
-    document.querySelector('#logout').onclick = () => {
-        localStorage.removeItem('token')
-        window.location.href = "../login/login.html"
-    }
 
     
 })

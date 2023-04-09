@@ -9,7 +9,8 @@ const Order = require("./models/order")
 
 const userRoutes = require('./routes/user')
 const expenseRoutes = require('./routes/expense');
-const purchaseRoutes = require('./routes/purchase')
+const purchaseRoutes = require('./routes/purchase');
+const premiumRoutes = require('./routes/premium')
 
 const app = express();
 
@@ -20,6 +21,8 @@ app.use(cors())
 app.use('/user',userRoutes)
 app.use('/',expenseRoutes)
 app.use('/purchase', purchaseRoutes)
+app.use('/premium', premiumRoutes)
+
 
 Expense.belongsTo(User, {constraints : true, onDelete : "CASCADE"});
 User.hasMany(Expense)
