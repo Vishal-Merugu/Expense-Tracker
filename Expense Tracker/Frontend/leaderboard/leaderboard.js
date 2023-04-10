@@ -16,7 +16,7 @@ const leaderboard = async () => {
             tr.innerHTML = `
             <th >${index+1}</th>
                 <td>${user.name}</td>
-                <td>${user.totalAmount || 0}</td>`    
+                <td>${user.totalExpenses}</td>`    
             document.querySelector('tbody').appendChild(tr)
 
         });

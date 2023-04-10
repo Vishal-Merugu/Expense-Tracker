@@ -11,7 +11,6 @@ exports.postSignUp = async (req,res,next) => {
         const { name, email, phone, password } = req.body
         const users = await User.findAll({where : { email : email }})
         const user = users[0]
-        console.log(user);
         if(user){
             res.status(404).json({message : "User Already Exists !!"})
         }
@@ -21,7 +20,8 @@ exports.postSignUp = async (req,res,next) => {
                     name : name,
                     email : email,
                     phone : phone,
-                    password : hash
+                    password : hash,
+                    totalExpenses : 0
                 })
                 res.status(200).send()      
             })
