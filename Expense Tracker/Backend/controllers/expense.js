@@ -1,4 +1,5 @@
 const Expense = require('../models/expense');
+const sequelize = require('../util/database');
 
 exports.getExpense = async (req,res,next) => { 
     try{
@@ -14,28 +15,32 @@ exports.getExpense = async (req,res,next) => {
 }
 
 exports.postExpense = async (req,res,next) => {
+    const t = await sequelize.transaction()
     try{
         const user = req.user
         const { amount, expense, description, category } = req.body;
-        // const newExpense = await Expense.create({
-        //     amount : amount,
-        //     expense : expense,
-        //     description : description,
-        //     category : category,
-        //     userId : user.id
-        // })
+
         const newExpense = await user.createExpense({
             amount : amount,
             expense : expense,
             description : description,
-            category : category
-        })
-        user.totalExpenses =  +user.totalExpenses + +amount
-        await user.save()
-        console.log(expense);
+            category : category,
+        },{ transaction : t })
+
+        const totalExpenses = +user.totalExpenses + +amount
+
+        await user.update({
+            totalExpenses :  totalExpenses
+        }, { transaction : t })
+
+        await t.commit()
+
         res.status(200).json(newExpense)
     }
     catch(err){
+        await t.rollback()
+        res.status(400).json({ success : false })
+
         console.log(err);
     }
 }
@@ -53,21 +58,33 @@ exports.getExpenses = async (req,res,next) => {
 }
 
 exports.deleteExpense = async (req,res,next) => {
+    const t = await sequelize.transaction()
     try{
         const user = req.user;
         const expenseId = req.params.expenseId
-        // const expense = await Expense.findByPk(expenseId)
+
         const expenses = await user.getExpenses({where : {id : expenseId}})
         const expense = expenses[0]
-        expense.destroy()
+        
+        const totalExpenses = +user.totalExpenses - +expense.amount
+
+        await user.update({
+            totalExpenses : totalExpenses
+        }, { transaction : t })
+
+        await expense.destroy({transaction : t})
+        t.commit()
         res.status(200).json({ success : true } )
     }
     catch(err){
+        t.rollback()
+        res.status(200).json({ success : false } )
         console.log(err);
     }
 }
 
 exports.editExpense = async (req,res,next) => {
+    const t = await sequelize.transaction()
     try{
         const user = req.user;
         const expenseId = req.params.expenseId;
@@ -75,16 +92,25 @@ exports.editExpense = async (req,res,next) => {
         const oldExpenses = await user.getExpenses({where : { id : expenseId}})
         oldExpense = oldExpenses[0]
         const { expense, amount, description, category } = req.body
-
-        oldExpense.expense = expense;
-        oldExpense.amount = amount;
-        oldExpense.description = description;
-        oldExpense.category = category
         
-        const newExpense = await oldExpense.save()
-        res.json(newExpense)
+        const totalExpenses = +user.totalExpenses - +oldExpense.amount + +amount 
+        await user.update({
+            totalExpenses : totalExpenses
+        }, { transaction : t })
+
+        const newExpense = await oldExpense.update({
+            expense : expense,
+            amount : amount,
+            description : description,
+            category : category
+        }, { transaction : t })
+
+        await t.commit()
+        res.status(200).json(newExpense)
     }
     catch(err){
+        t.rollback()
         console.log(err);
+        res.status(400).json( {success : false} )
     }
 }
