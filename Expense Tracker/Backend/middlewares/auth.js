@@ -1,13 +1,16 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-const jwtSecretKey = "8TVCOrH3u_tfvcOl6sNVK_g_2AjwyvAkkq4bDD6xmSc"
+const dotenv =  require("dotenv");
+dotenv.config()
+
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
 
 const authenticate = (req, res, next) => {
     try{
         // const token = req.header('Authorization');
         const token = req.headers["authorization"]
-        const user = jwt.verify(token, jwtSecretKey)
+        const user = jwt.verify(token, JWT_SECRET_KEY)
         userId = user.id
         User.findByPk(userId)
         .then((user) => {

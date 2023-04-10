@@ -21,6 +21,7 @@
     "pay": "^0.0.1",
     "razor": "^1.1.1",
     "razorpay": "^2.8.6",
-    "sequelize": "^6.30.0"
+    "sequelize": "^6.30.0",
+    "sib-api-v3-sdk": "^8.5.0"
   }
 }

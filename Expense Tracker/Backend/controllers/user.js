@@ -4,7 +4,11 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
 const jwt = require('jsonwebtoken');
-const jwtSecretKey = "8TVCOrH3u_tfvcOl6sNVK_g_2AjwyvAkkq4bDD6xmSc"
+const dotenv =  require("dotenv");
+dotenv.config();
+
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
+
 
 exports.postSignUp = async (req,res,next) => {
     try{
@@ -33,7 +37,7 @@ exports.postSignUp = async (req,res,next) => {
 }
 
 function generateAccessToken(id,name){
-    return jwt.sign({ id: id, name : name},jwtSecretKey)
+    return jwt.sign({ id: id, name : name}, JWT_SECRET_KEY)
 }
 
 
