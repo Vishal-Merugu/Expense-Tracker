@@ -10,7 +10,8 @@ const Order = require("./models/order")
 const userRoutes = require('./routes/user')
 const expenseRoutes = require('./routes/expense');
 const purchaseRoutes = require('./routes/purchase');
-const premiumRoutes = require('./routes/premium')
+const premiumRoutes = require('./routes/premium');
+const passwordRoutes = require('./routes/password')
 
 const app = express();
 
@@ -21,7 +22,8 @@ app.use(cors())
 app.use('/user',userRoutes)
 app.use('/',expenseRoutes)
 app.use('/purchase', purchaseRoutes)
-app.use('/premium', premiumRoutes)
+app.use('/premium', premiumRoutes);
+app.use('/password', passwordRoutes)
 
 
 Expense.belongsTo(User, {constraints : true, onDelete : "CASCADE"});
