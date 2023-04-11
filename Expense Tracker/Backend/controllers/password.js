@@ -169,7 +169,7 @@ exports.getResetPassword = async (req,res,next) => {
     }
 }
 
-exports.postResetPassword = async (req,res,next) => {
+exports.postUpdatePassword = async (req,res,next) => {
     const t = await sequelize.transaction()
     try{
         const id = req.params.uuid;
