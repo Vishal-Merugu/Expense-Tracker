@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const FilesDownloaded = require('../models/filesdownloaded')
 
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
@@ -70,5 +71,20 @@ exports.getPremium = (req,res,next) => {
     const user = req.user;
     if(user){
         return res.status(200).json({isPremium : user.isPremium})
+    }
+}
+
+exports.getFilesDownloaded = async (req, res, next) => {
+    try{
+        const user = req.user;
+        const filesdownloaded = await FilesDownloaded.findAll({
+            where : {
+                userId : user.id
+            }
+        })
+        res.status(200).json(filesdownloaded)
+    }
+    catch(err){
+        console.log(err);
     }
 }

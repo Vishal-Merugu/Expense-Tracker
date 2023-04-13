@@ -1,9 +1,11 @@
 const Expense = require('../models/expense');
+const FilesDownloaded = require('../models/filesdownloaded');
 const sequelize = require('../util/database');
 const userServices = require('../services/userservices')
 const s3Services = require('../services/s3services');
 let converter = require("json-2-csv");
 require('dotenv').config();
+
 
 
 exports.getExpense = async (req,res,next) => { 
@@ -166,6 +168,10 @@ exports.downloadReport = async (req,res,next) => {
         const fileName = `Expense_${user.id}/${user.name}_Report_${new Date()}.csv`;
         const fileUrl = await s3Services.uploadTos3(csv,fileName);
         // console.log(fileUrl);
+        await FilesDownloaded.create({
+            fileurl : fileUrl,
+            userId : user.id
+        })
         res.status(200).json({ fileUrl, success : true })
     }
     catch(err){

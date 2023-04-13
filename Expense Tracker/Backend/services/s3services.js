@@ -22,7 +22,7 @@ exports.uploadTos3 = async (data, fileName) => {
                 console.log(err);
                 reject(err)
             }else{
-                console.log(s3Response.Location);
+                // console.log(s3Response.Location);
                 resolve(s3Response.Location);
             }
         })

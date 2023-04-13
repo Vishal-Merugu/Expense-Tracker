@@ -49,12 +49,12 @@ handler();
 
 async function downloadReport(e){
     const response = await axios.get(`${url}/expenses/user/downloadreport`, config)
-    console.log(response);
+    // console.log(response);
     if(response.status == 200){
         var a = document.createElement('a');
         a.href = response.data.fileUrl;
         a.download = "temp.csv"
-        a.click()
+        a.click();
     }else{
         alert("Some Error Occured Try After Some time")
     }
@@ -69,4 +69,30 @@ function getMonthName(monthNumber) {
     });
   }
 
+showDownloadedFiles()
+async function showDownloadedFiles(){
+    const response = await axios.get(`${url}/user/filesdownloaded`, config);
+    response.data.forEach((file,index) => {
+        const tr = document.createElement('tr')
+        tr.innerHTML = `
+        <th scope="row">${index+1}</th>
+                  <td>${file.createdAt.slice(0,10)}</td>
+                  <td>
+                    <div class="button" id = ${file.fileurl}>
+                    <button class = "btn btn-dark btn-sm" type = "submit" id = "oldfiledownload">download</button>
+                    </div>
+                  </td>
+        `
+        document.querySelector('#downloadedfiles').appendChild(tr)
+    })
+}
 
+document.querySelector('#downloadedfiles').onclick = async(e) => {
+    if(e.target.id == 'oldfiledownload'){
+        const fileUrl = e.target.parentNode.id
+        var a = document.createElement('a');
+        a.href = fileUrl;
+        a.download = "temp.csv"
+        a.click()
+    } 
+}
