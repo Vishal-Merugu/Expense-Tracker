@@ -6,6 +6,7 @@ document.querySelectorAll('#year').forEach(year => {
 })
 document.querySelector('#month').innerHTML =getMonthName( new Date().getMonth()+1);
 
+document.querySelector('#download').onclick = downloadReport ;
 
 handler();
  async function handler() {
@@ -46,6 +47,10 @@ handler();
     })
 }
 
+async function downloadReport(){
+    const response = axios.get(`${url}/expenses/user/downloadreport`, config)
+    console.log(response.data);
+}
 
 function getMonthName(monthNumber) {
     const date = new Date();

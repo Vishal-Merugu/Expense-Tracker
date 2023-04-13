@@ -1,8 +1,8 @@
 const Expense = require('../models/expense');
 const sequelize = require('../util/database');
 let converter = require("json-2-csv");
-var fs = require('fs')
-
+const AWS = require('aws-sdk');
+require('dotenv').config();
 
 exports.getExpense = async (req,res,next) => { 
     try{
@@ -147,4 +147,53 @@ exports.getReport = async (req,res,next) => {
     catch(err){
         console.log(err);
     }
+}
+
+async function  uploadToS3(data, fileName){
+    const BUCKET_NAME  = process.env.BUCKET_NAME;
+    const IAM_ACCESS_KEY = process.env.IAM_ACCESS_KEY;
+    const IAM_SECRET_KEY = process.env.IAM_SECRET_KEY;
+
+    let s3bucket = new AWS.S3({
+        accessKeyId : IAM_ACCESS_KEY,
+        secretAccessKey : IAM_SECRET_KEY
+    })
+
+    s3bucket.createBucket(() => {
+        var params = {
+            Bucket : BUCKET_NAME,
+            Key : fileName,
+            Body : data
+        }
+        s3bucket.upload(params, (err, s3Response)=> {
+            if(err){
+                console.log(err);
+            }else{
+                console.log(s3Response);
+            }
+        })
+    })
+
+}
+
+
+exports.downloadReport = async (req,res,next) => {
+    try{
+        const user = req.user;
+        const expensesResponse = await user.getExpenses({
+            attributes : ['expense', 'category', 'amount']
+        });
+        const expenses = []
+        expensesResponse.forEach(expense => {
+            expenses.push(expense.dataValues)
+        })
+        const csv = await converter.json2csv(expenses)
+        const fileName = `${user.name}_Expense_Report.csv`;
+        const fileUrl = uploadToS3(csv,fileName);
+        res.status(200).json({ fileUrl, success : true })
+    }
+    catch(err){
+        console.log(err);
+    }
+
 }
