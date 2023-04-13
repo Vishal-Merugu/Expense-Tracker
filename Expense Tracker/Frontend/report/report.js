@@ -47,9 +47,12 @@ handler();
     })
 }
 
-async function downloadReport(){
-    const response = axios.get(`${url}/expenses/user/downloadreport`, config)
-    console.log(response.data);
+async function downloadReport(e){
+    const response = await axios.get(`${url}/expenses/user/downloadreport`, config)
+    var a = document.createElement('a');
+    a.href = response.data.fileUrl;
+    a.download = "temp.csv"
+    a.click()
 }
 
 function getMonthName(monthNumber) {

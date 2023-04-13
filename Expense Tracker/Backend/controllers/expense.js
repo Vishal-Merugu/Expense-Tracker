@@ -149,31 +149,34 @@ exports.getReport = async (req,res,next) => {
     }
 }
 
-async function  uploadToS3(data, fileName){
+async function uploadToS3(data, fileName){
     const BUCKET_NAME  = process.env.BUCKET_NAME;
     const IAM_ACCESS_KEY = process.env.IAM_ACCESS_KEY;
     const IAM_SECRET_KEY = process.env.IAM_SECRET_KEY;
 
-    let s3bucket = new AWS.S3({
+    let s3Bucket =  new AWS.S3({
         accessKeyId : IAM_ACCESS_KEY,
         secretAccessKey : IAM_SECRET_KEY
     })
 
-    s3bucket.createBucket(() => {
-        var params = {
-            Bucket : BUCKET_NAME,
-            Key : fileName,
-            Body : data
-        }
-        s3bucket.upload(params, (err, s3Response)=> {
+
+    var params = {
+        Bucket : BUCKET_NAME,
+        Key : fileName,
+        Body : data,
+        ACL : "public-read"
+    }
+    return new Promise(async (resolve,reject) => {
+        const s3Response = await s3Bucket.upload(params, (err, s3Response) => {
             if(err){
                 console.log(err);
+                reject(err)
             }else{
-                console.log(s3Response);
+                console.log(s3Response.Location);
+                resolve(s3Response.Location);
             }
         })
     })
-
 }
 
 
@@ -188,8 +191,9 @@ exports.downloadReport = async (req,res,next) => {
             expenses.push(expense.dataValues)
         })
         const csv = await converter.json2csv(expenses)
-        const fileName = `${user.name}_Expense_Report.csv`;
-        const fileUrl = uploadToS3(csv,fileName);
+        const fileName = `Expense_${user.id}/${user.name}_Report_${new Date()}.csv`;
+        const fileUrl = await uploadToS3(csv,fileName);
+        console.log(fileUrl);
         res.status(200).json({ fileUrl, success : true })
     }
     catch(err){
