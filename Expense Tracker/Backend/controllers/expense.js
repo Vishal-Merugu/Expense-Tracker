@@ -1,8 +1,10 @@
 const Expense = require('../models/expense');
 const sequelize = require('../util/database');
+const userServices = require('../services/userservices')
+const s3Services = require('../services/s3services');
 let converter = require("json-2-csv");
-const AWS = require('aws-sdk');
 require('dotenv').config();
+
 
 exports.getExpense = async (req,res,next) => { 
     try{
@@ -10,6 +12,7 @@ exports.getExpense = async (req,res,next) => {
         const expenseId = req.params.expenseId;
         const expenses = await user.getExpenses({where : {id : expenseId }})
         const expense = expenses[0]
+        console.log(expense);
         res.json(expense)
     }
     catch{
@@ -52,7 +55,7 @@ exports.getExpenses = async (req,res,next) => {
     try{
         const user = req.user;
         // const expenses = await Expense.findAll({where : {userId : user.id }}) 
-        const expenses = await user.getExpenses()
+        const expenses = await userServices.getExpenses(req)
         res.json(expenses)
     }
     catch(err){
@@ -149,37 +152,6 @@ exports.getReport = async (req,res,next) => {
     }
 }
 
-async function uploadToS3(data, fileName){
-    const BUCKET_NAME  = process.env.BUCKET_NAME;
-    const IAM_ACCESS_KEY = process.env.IAM_ACCESS_KEY;
-    const IAM_SECRET_KEY = process.env.IAM_SECRET_KEY;
-
-    let s3Bucket =  new AWS.S3({
-        accessKeyId : IAM_ACCESS_KEY,
-        secretAccessKey : IAM_SECRET_KEY
-    })
-
-    var params = {
-        Bucket : BUCKET_NAME,
-        Key : fileName,
-        Body : data,
-        ACL : "public-read"
-    }
-    return new Promise(async (resolve,reject) => {
-        const s3Response = await s3Bucket.upload(params, (err, s3Response) => {
-            if(err){
-                console.log(err);
-                reject(err)
-            }else{
-                console.log(s3Response.Location);
-                resolve(s3Response.Location);
-            }
-        })
-    })
-}
-
-
-
 exports.downloadReport = async (req,res,next) => {
     try{
         const user = req.user;
@@ -192,8 +164,8 @@ exports.downloadReport = async (req,res,next) => {
         })
         const csv = await converter.json2csv(expenses)
         const fileName = `Expense_${user.id}/${user.name}_Report_${new Date()}.csv`;
-        const fileUrl = await uploadToS3(csv,fileName);
-        console.log(fileUrl);
+        const fileUrl = await s3Services.uploadTos3(csv,fileName);
+        // console.log(fileUrl);
         res.status(200).json({ fileUrl, success : true })
     }
     catch(err){
