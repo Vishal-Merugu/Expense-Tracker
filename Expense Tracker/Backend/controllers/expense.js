@@ -159,7 +159,6 @@ async function uploadToS3(data, fileName){
         secretAccessKey : IAM_SECRET_KEY
     })
 
-
     var params = {
         Bucket : BUCKET_NAME,
         Key : fileName,
@@ -180,6 +179,7 @@ async function uploadToS3(data, fileName){
 }
 
 
+
 exports.downloadReport = async (req,res,next) => {
     try{
         const user = req.user;
@@ -197,6 +197,7 @@ exports.downloadReport = async (req,res,next) => {
         res.status(200).json({ fileUrl, success : true })
     }
     catch(err){
+        res.status(500).json({success : false, err : err})
         console.log(err);
     }
 

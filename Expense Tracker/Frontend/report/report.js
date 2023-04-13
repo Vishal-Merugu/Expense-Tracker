@@ -49,10 +49,15 @@ handler();
 
 async function downloadReport(e){
     const response = await axios.get(`${url}/expenses/user/downloadreport`, config)
-    var a = document.createElement('a');
-    a.href = response.data.fileUrl;
-    a.download = "temp.csv"
-    a.click()
+    console.log(response);
+    if(response.status == 200){
+        var a = document.createElement('a');
+        a.href = response.data.fileUrl;
+        a.download = "temp.csv"
+        a.click()
+    }else{
+        alert("Some Error Occured Try After Some time")
+    }
 }
 
 function getMonthName(monthNumber) {
