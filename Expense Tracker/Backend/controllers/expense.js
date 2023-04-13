@@ -1,5 +1,8 @@
 const Expense = require('../models/expense');
 const sequelize = require('../util/database');
+let converter = require("json-2-csv");
+var fs = require('fs')
+
 
 exports.getExpense = async (req,res,next) => { 
     try{
@@ -112,5 +115,36 @@ exports.editExpense = async (req,res,next) => {
         t.rollback()
         console.log(err);
         res.status(400).json( {success : false} )
+    }
+}
+
+exports.getReport = async (req,res,next) => {
+    try{
+        const user = req.user;
+        currentYear = new Date().getFullYear()
+    
+        const yearlyExpenses = []
+    
+        for(let month = 1; month <= 12; month++){
+            let monthExpenses = await user.getExpenses({
+                attributes : ['amount', 'expense', 'category'],
+                where : sequelize.where(sequelize.fn('MONTH', sequelize.col('createdAt')), month),
+                and: sequelize.where(sequelize.fn('YEAR', sequelize.col('createdAt')), currentYear)
+            })
+    
+            let monthTotalExpense = 0
+            if(monthExpenses){
+                monthExpenses.forEach(expense => {
+                    monthTotalExpense += expense.amount
+                });
+            }
+    
+            yearlyExpenses.push({expenses : monthExpenses, monthTotalExpense : monthTotalExpense})
+        }
+        
+        res.json(yearlyExpenses)
+    }
+    catch(err){
+        console.log(err);
     }
 }

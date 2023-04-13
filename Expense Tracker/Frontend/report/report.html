@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leaderboard</title>
+  <title>Report</title>
 
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
@@ -33,7 +33,7 @@
                 <a class="nav-link active" aria-current="page" href="../report/report.html">Report</a>
               </li>
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="#">Leaderboard</a>
+              <a class="nav-link" aria-current="page" href="../leaderboard/leaderboard.html">Leaderboard</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" aria-current="page" href="../pricing/pricing.html">Pricing</a>
@@ -56,34 +56,34 @@
   <main>
     <div class="container">
         <div class="row alert alert-primary text-center col-12 mx-auto">
-            <div class="" id = "year">
-                <h5>2021</h5>
+            <div class="">
+                <h5 id = "year"></h5>
             </div>
         </div>
       <div class="row">
         <div class="col-11 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-5  m-auto m-lg-auto ">
             <div class="alert alert-info text-center">
                 <h6>
-                    <span id = "Month">March</span>
-                    <span id = "year"> 2021</span>
+                    <span id = "month">March</span>
+                    <span id = "year"></span>
                 </h6>
             </div>
-          <table class="table table-success table-striped table-bordered">
+          <table class="table table-success table-striped table-bordered text-center">
             <thead>
               <tr>
                 <th scope="col">#</th>
-                <th scope="col">Description</th>
-                <th scope="col">Food</th>
+                <th scope="col">Expense</th>
+                <th scope="col">Category</th>
                 <th scope="col">Amount</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
+            <tbody id = "monthlyreport">
+              <!-- <tr>
                 <th>1</th>
                 <td>Mark</td>
                 <td>3000</td>
                 <td>3000</td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>
         </div>
@@ -93,20 +93,18 @@
                     <span>Yearly Report</span>
                 </h6>
             </div>
-            <table class="table table-success table-striped table-bordered">
+            <table class="table table-success table-striped table-bordered text-center">
               <thead>
                 <tr>
                   <th scope="col">Month</th>
-                  <th scope="col">Income</th>
-                  <th scope="col">Expenses</th>
+                  <th scope="col">Total Expenses</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
+              <tbody id = "yearlyreport">
+                <!-- <tr>
                   <td>January</td>
-                  <td>Mark</td>
                   <td>3000</td>
-                </tr>
+                </tr> -->
               </tbody>
             </table>
           </div>
