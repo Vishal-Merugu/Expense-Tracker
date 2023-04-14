@@ -65,107 +65,112 @@ exports.postForgotPassword = async (req,res,next) => {
 
 
 exports.getResetPassword = async (req,res,next) => {
-    const id  = req.params.uuid;
-    const forgotPasswordRequest = await ForgotPasswordRequest.findOne({ where : { id : id }})
-    const isActive = forgotPasswordRequest.isActive;
-    if(isActive){
-        res.set("id",id)
-        res.status(200).send(`
-        <!DOCTYPE html>
-        <html lang="en" >
-        <head>
-
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Forgot password</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-        <style>
-            *{
-            margin: 0%;
-            padding:0;
-            box-sizing: border-box;
-            }
-
-            body{
-                height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-
-            .login{
-                width : 360px;
-                background-color: white;
-                height: min-content;
-                padding: 20px;
-                border-radius: 12px;
-                box-shadow: 12px 10px #c9dbd4 ;
-            }
-
-            .login h1{
-                font-size: 36px;
-                margin-bottom: 25px;
-            }
-
-            .login form{
-                font-size: 16px;
-            }
-
-            .login form .form-group{
-                margin-bottom: 12px;
-            }
-
-            #submit{
-                font-size: 17px;
-                margin-top: 15px;
-                background-color: #D7E1DD;
-            }
-
-            #submit:hover, #submit:active{
-                background-color: #B0B9B6;
-            }
-
-        </style>
-
-
-    </head>
-    <body style="background-color:#E8F5F0;"> 
-        <div class="login">
-            <h3 class = "text-center mb-3 mt-1">Create New Password</h3>
-            <form action="/password/resetpassword/${id}" class = "needs-validation" method=POST
-            oninput='up2.setCustomValidity(up2.value != up.value ? "Passwords do not match." : "")'>
-            <div class="form-group was-validated">
-                <label class = "form-label" for="password1">Password:</label>
-                <input class = "form-control"  id="password1" type=password required name=up>
-                <div class="invalid-feedback">
-                    Please enter your new password
+    try{
+        const id  = req.params.uuid;
+        const forgotPasswordRequest = await ForgotPasswordRequest.findOne({ where : { id : id }})
+        const isActive = forgotPasswordRequest.isActive;
+        if(isActive){
+            res.set("id",id)
+            res.status(200).send(`
+            <!DOCTYPE html>
+            <html lang="en" >
+            <head>
+    
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Forgot password</title>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+            <style>
+                *{
+                margin: 0%;
+                padding:0;
+                box-sizing: border-box;
+                }
+    
+                body{
+                    height: 100vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+    
+                .login{
+                    width : 360px;
+                    background-color: white;
+                    height: min-content;
+                    padding: 20px;
+                    border-radius: 12px;
+                    box-shadow: 12px 10px #c9dbd4 ;
+                }
+    
+                .login h1{
+                    font-size: 36px;
+                    margin-bottom: 25px;
+                }
+    
+                .login form{
+                    font-size: 16px;
+                }
+    
+                .login form .form-group{
+                    margin-bottom: 12px;
+                }
+    
+                #submit{
+                    font-size: 17px;
+                    margin-top: 15px;
+                    background-color: #D7E1DD;
+                }
+    
+                #submit:hover, #submit:active{
+                    background-color: #B0B9B6;
+                }
+    
+            </style>
+    
+    
+        </head>
+        <body style="background-color:#E8F5F0;"> 
+            <div class="login">
+                <h3 class = "text-center mb-3 mt-1">Create New Password</h3>
+                <form action="/password/resetpassword/${id}" class = "needs-validation" method=POST
+                oninput='up2.setCustomValidity(up2.value != up.value ? "Passwords do not match." : "")'>
+                <div class="form-group was-validated">
+                    <label class = "form-label" for="password1">Password:</label>
+                    <input class = "form-control"  id="password1" type=password required name=up>
+                    <div class="invalid-feedback">
+                        Please enter your new password
+                    </div>
                 </div>
+                <div class="form-group was-validated">
+                    <label for="password2" class = "form-label">Confirm password:
+                    </label>
+                    <input id="password2" class = "form-control" type=password name=up2 required>
+                </div>
+                <input class = "btn w-100" id = "submit" type="submit" value = "Reset Password">
+                </form>
             </div>
-            <div class="form-group was-validated">
-                <label for="password2" class = "form-label">Confirm password:
-                </label>
-                <input id="password2" class = "form-control" type=password name=up2 required>
-            </div>
-            <input class = "btn w-100" id = "submit" type="submit" value = "Reset Password">
-            </form>
-        </div>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-
-        <script>
-        const myHeaders = new Headers(); // Currently empty
-        const temp = myHeaders.get("id"); // Returns null
-        console.log(temp);
-        </script>
-        
-    </body>
-    </html>
-        `)
-    res.end()
-    }else{
-        res.status('400').send("<h1>Link Expired</h1>")
+    
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+            <script>
+            const myHeaders = new Headers(); // Currently empty
+            const temp = myHeaders.get("id"); // Returns null
+            console.log(temp);
+            </script>
+            
+        </body>
+        </html>
+            `)
+        res.end()
+        }else{
+            res.status('400').send("<h1>Link Expired</h1>")
+        }
+    }
+    catch(err){
+        console.log(err);
     }
 }
 

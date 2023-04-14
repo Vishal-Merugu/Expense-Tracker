@@ -1,4 +1,14 @@
-const url = 'http://localhost:3000'
+const url = 'http://localhost:3000';
+
+localStorage.setItem('rowsPerPage', 3);
+
+document.querySelector('#rowsperpage').onchange = ()=> {
+    const currentPage = document.querySelector('#current-page').textContent;
+    const rowsPerPage = document.querySelector('#rowsperpage').value;
+    localStorage.setItem('rowsPerPage', rowsPerPage);
+    getExpenses(+currentPage, +rowsPerPage)
+}
+
 
 const Amount = document.querySelector('#amount');
 const Expense = document.querySelector('#expense');
@@ -81,7 +91,7 @@ async function getExpenses(page = 1, limit = 3){
     expenses.forEach(expense => {
         showOutput(expense)
     });
-    if((+page + 1) > Math.ceil(totalExpenses/3)){
+    if((+page + 1) > Math.ceil(totalExpenses/limit)){
         document.querySelector('#next-page').classList.add('disabled')
     }else{
         document.querySelector('#next-page').classList.remove('disabled')
@@ -94,21 +104,24 @@ document.addEventListener("DOMContentLoaded", async ()=> {
     getExpenses();
     document.querySelector('.pagination').onclick = (e) => {
         if(e.target.id == 'next-page'){
+
             const CurrentPage = document.querySelector('#current-page')
-            const currentPage = CurrentPage.textContent
-            getExpenses( +currentPage + 1);
+            const currentPage = CurrentPage.textContent;
+            const rowsPerPage = localStorage.getItem('rowsPerPage')
+            getExpenses( +currentPage + 1, +rowsPerPage);
             CurrentPage.innerHTML = +currentPage + 1
             document.querySelector('#prev-page').parentNode.classList.remove('disabled')
         }
         if(e.target.id == 'prev-page'){
             const CurrentPage = document.querySelector("#current-page")
             const currentPage = +CurrentPage.textContent 
-            CurrentPage.textContent = +currentPage - 1
+            CurrentPage.textContent = +currentPage - 1;
             if((+CurrentPage.textContent - 1) == 0){
                 document.querySelector('#prev-page').parentNode.classList.add('disabled')
             }
             // console.log(+CurrentPage.textContent);
-            getExpenses(+CurrentPage.textContent);
+            const rowsPerPage = localStorage.getItem('rowsPerPage')
+            getExpenses(+CurrentPage.textContent, +rowsPerPage);
         }
     }
     document.querySelector('form').onsubmit = async (e) => {
