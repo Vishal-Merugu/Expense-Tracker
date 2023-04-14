@@ -1,4 +1,4 @@
-exports.getExpenses = (req) => {
+exports.getExpenses = (req,options) => {
     const user = req.user;
-    return user.getExpenses()
+    return user.getExpenses(options)
 }

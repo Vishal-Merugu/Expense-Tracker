@@ -56,9 +56,19 @@ exports.postExpense = async (req,res,next) => {
 exports.getExpenses = async (req,res,next) => {
     try{
         const user = req.user;
+        const page = req.headers.page;
+        const limit  = req.headers.limit;
+        console.log(page,limit);
         // const expenses = await Expense.findAll({where : {userId : user.id }}) 
-        const expenses = await userServices.getExpenses(req)
-        res.json(expenses)
+        const expenses = await userServices.getExpenses(req,{
+            limit : +limit,
+            offset : +((page-1)*limit)
+        })
+        const countExpenses = await userServices.getExpenses(req,{
+            attributes :[ [sequelize.fn('COUNT', sequelize.col('expense')), "totalExpenses"]]
+        })
+        const totalExpenses = countExpenses[0].dataValues.totalExpenses;
+        res.json({expenses : expenses, totalExpenses : totalExpenses})
     }
     catch(err){
         console.log(err);

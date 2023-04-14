@@ -21,7 +21,7 @@ async function postExpense(obj){
     try{
         const token = localStorage.getItem("token")
         const response = await axios.post(`${url}/expense`, obj,{headers : { Authorization : token}})
-        showOutput(response.data)
+        // showOutput(response.data)
     }
     catch(err){
         console.log(err);
@@ -45,7 +45,7 @@ async function editExpense(expenseId, newExpense){
         const response = await axios.put(`${url}/expense/${expenseId}`,newExpense, {headers : { Authorization : token}})
         const expense = response.data;
         document.getElementById('expenseId').value = ''
-        showOutput(expense)
+        // showOutput(expense)
     }
     catch(err){
         console.log(err);
@@ -69,15 +69,48 @@ function showOutput(obj){
     document.querySelector('tbody').append(tr)
 }
 
-document.addEventListener("DOMContentLoaded", async ()=> {
-
+async function getExpenses(page = 1, limit = 3){
     const token = localStorage.getItem("token")
-    const response = await axios.get(`${url}/expenses`,{ headers : { "Authorization" : token}})
-    const expenses = response.data;
+    const response = await axios.get(`${url}/expenses`,{ headers : { "Authorization" : token, page : page, limit : limit }})
+
+    const expenses = response.data.expenses;
+    const totalExpenses = response.data.totalExpenses
+
+    document.querySelector('tbody').innerHTML = ''
+
     expenses.forEach(expense => {
         showOutput(expense)
     });
-    
+    if((+page + 1) > Math.ceil(totalExpenses/3)){
+        document.querySelector('#next-page').classList.add('disabled')
+    }else{
+        document.querySelector('#next-page').classList.remove('disabled')
+    }
+
+}
+
+document.addEventListener("DOMContentLoaded", async ()=> {
+
+    getExpenses();
+    document.querySelector('.pagination').onclick = (e) => {
+        if(e.target.id == 'next-page'){
+            const CurrentPage = document.querySelector('#current-page')
+            const currentPage = CurrentPage.textContent
+            getExpenses( +currentPage + 1);
+            CurrentPage.innerHTML = +currentPage + 1
+            document.querySelector('#prev-page').parentNode.classList.remove('disabled')
+        }
+        if(e.target.id == 'prev-page'){
+            const CurrentPage = document.querySelector("#current-page")
+            const currentPage = +CurrentPage.textContent 
+            CurrentPage.textContent = +currentPage - 1
+            if((+CurrentPage.textContent - 1) == 0){
+                document.querySelector('#prev-page').parentNode.classList.add('disabled')
+            }
+            // console.log(+CurrentPage.textContent);
+            getExpenses(+CurrentPage.textContent);
+        }
+    }
     document.querySelector('form').onsubmit = async (e) => {
         e.preventDefault()
         const amount =  Amount.value;
