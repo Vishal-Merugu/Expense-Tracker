@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const sequelize = require('./util/database');
+const helmet = require('helmet');
 
 const User = require('./models/user');
 const Expense = require('./models/expense');
@@ -20,6 +21,8 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended : false }));
 app.use(bodyParser.json())
 app.use(cors())
+
+app.use(helmet())
 
 app.use('/user',userRoutes);
 app.use('/',expenseRoutes);
