@@ -1,5 +1,6 @@
-const path = require('./util/path')
+// const path = require('./util/path')
 const fs = require('fs')
+const path = require('path')
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -7,7 +8,6 @@ const cors = require('cors');
 const sequelize = require('./util/database');
 const helmet = require('helmet');
 const morgan = require('morgan')
-const https = require('https')
 
 const User = require('./models/user');
 const Expense = require('./models/expense');
