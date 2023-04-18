@@ -32,6 +32,9 @@ async function postExpense(obj){
         const token = localStorage.getItem("token")
         const response = await axios.post(`${url}/expenses/expense`, obj,{headers : { Authorization : token}})
         // showOutput(response.data)
+        const currentPage = CurrentPage.textContent;
+        const rowsPerPage = localStorage.getItem('rowsPerPage')
+        getExpenses( +currentPage, +rowsPerPage);
     }
     catch(err){
         console.log(err);
