@@ -1,5 +1,5 @@
 
-const url = "http://localhost:3000/"
+const url = "http://localhost:3000"
 
 const Email = document.querySelector("#email");
 const Password =  document.querySelector("#password");
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", ()=>{
                 password : password
             }
     
-           const response = await axios.post(`${url}user/login`,user)
+           const response = await axios.post(`${url}/user/login`,user)
            if(response.status == 200){
                 const token = response.data.token;
                localStorage.setItem("token",token);

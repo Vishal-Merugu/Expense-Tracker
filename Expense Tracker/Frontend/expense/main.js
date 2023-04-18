@@ -2,6 +2,9 @@ const url = 'http://localhost:3000';
 
 localStorage.setItem('rowsPerPage', 3);
 
+const CurrentPage = document.querySelector('#current-page')
+
+
 document.querySelector('#rowsperpage').onchange = ()=> {
     const currentPage = document.querySelector('#current-page').textContent;
     const rowsPerPage = document.querySelector('#rowsperpage').value;
@@ -18,7 +21,7 @@ const Category  = document.querySelector('#category');
 async function getExpense(id){
     try{
         const token = localStorage.getItem("token")
-        const response = await axios.get(`${url}/expense/${id}`,{headers : { Authorization : token}});
+        const response = await axios.get(`${url}/expenses/${id}`,{headers : { Authorization : token}});
         const expense = response.data;
         return expense
     }
@@ -30,8 +33,11 @@ async function getExpense(id){
 async function postExpense(obj){
     try{
         const token = localStorage.getItem("token")
-        const response = await axios.post(`${url}/expense`, obj,{headers : { Authorization : token}})
+        const response = await axios.post(`${url}/expenses/expense`, obj,{headers : { Authorization : token}})
         // showOutput(response.data)
+        const currentPage = CurrentPage.textContent;
+        const rowsPerPage = localStorage.getItem('rowsPerPage')
+        getExpenses( +currentPage, +rowsPerPage);
     }
     catch(err){
         console.log(err);
@@ -42,7 +48,7 @@ async function deleteExpense(id){
     try{
         const token = localStorage.getItem("token")
         document.getElementById(id).remove()
-        const response = await axios.delete(`${url}/expense/${id}`,{headers : { "Authorization" : token}});
+        const response = await axios.delete(`${url}/expenses/${id}`,{headers : { "Authorization" : token}});
     }
     catch(err){
         console.log(err);
@@ -52,9 +58,12 @@ async function deleteExpense(id){
 async function editExpense(expenseId, newExpense){
     try{
         const token = localStorage.getItem("token")
-        const response = await axios.put(`${url}/expense/${expenseId}`,newExpense, {headers : { Authorization : token}})
+        const response = await axios.put(`${url}/expenses/${expenseId}`,newExpense, {headers : { Authorization : token}})
         const expense = response.data;
         document.getElementById('expenseId').value = ''
+        const currentPage = CurrentPage.textContent;
+        const rowsPerPage = localStorage.getItem('rowsPerPage')
+        getExpenses( +currentPage, +rowsPerPage);
         // showOutput(expense)
     }
     catch(err){
@@ -105,7 +114,6 @@ document.addEventListener("DOMContentLoaded", async ()=> {
     document.querySelector('.pagination').onclick = (e) => {
         if(e.target.id == 'next-page'){
 
-            const CurrentPage = document.querySelector('#current-page')
             const currentPage = CurrentPage.textContent;
             const rowsPerPage = localStorage.getItem('rowsPerPage')
             getExpenses( +currentPage + 1, +rowsPerPage);

@@ -54,7 +54,8 @@ async function downloadReport(e){
         var a = document.createElement('a');
         a.href = response.data.fileUrl;
         a.download = "temp.csv"
-        a.click();
+        await a.click();
+        
     }else{
         alert("Some Error Occured Try After Some time")
     }
