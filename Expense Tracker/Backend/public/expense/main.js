@@ -2,6 +2,8 @@ const url = 'http://18.212.3.80:3000';
 
 localStorage.setItem('rowsPerPage', 3);
 
+const CurrentPage = document.querySelector('#current-page')
+
 document.querySelector('#rowsperpage').onchange = ()=> {
     const currentPage = document.querySelector('#current-page').textContent;
     const rowsPerPage = document.querySelector('#rowsperpage').value;
@@ -34,7 +36,7 @@ async function postExpense(obj){
         // showOutput(response.data)
         const currentPage = CurrentPage.textContent;
         const rowsPerPage = localStorage.getItem('rowsPerPage')
-        getExpenses( +currentPage, +rowsPerPage);
+        getExpenses( +currentPage, +rowsPerPage);a
     }
     catch(err){
         console.log(err);
@@ -59,6 +61,9 @@ async function editExpense(expenseId, newExpense){
         const expense = response.data;
         document.getElementById('expenseId').value = ''
         // showOutput(expense)
+        const currentPage = CurrentPage.textContent;
+        const rowsPerPage = localStorage.getItem('rowsPerPage')
+        getExpenses( +currentPage, +rowsPerPage);
     }
     catch(err){
         console.log(err);

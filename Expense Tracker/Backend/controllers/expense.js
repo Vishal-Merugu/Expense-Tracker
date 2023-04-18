@@ -14,7 +14,7 @@ exports.getExpense = async (req,res,next) => {
         const expenseId = req.params.expenseId;
         const expenses = await user.getExpenses({where : {id : expenseId }})
         const expense = expenses[0]
-        console.log(expense);
+        // console.log(expense);
         res.json(expense)
     }
     catch{
@@ -58,7 +58,7 @@ exports.getExpenses = async (req,res,next) => {
         const user = req.user;
         const page = req.headers.page;
         const limit  = req.headers.limit;
-        console.log(page,limit);
+        // console.log(page,limit);
         // const expenses = await Expense.findAll({where : {userId : user.id }}) 
         const expenses = await userServices.getExpenses(req,{
             limit : +limit,
