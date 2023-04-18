@@ -1,4 +1,4 @@
-const url = "http://18.212.3.80:3000"
+const url = "http://localhost:3000"
 
 
 document.querySelectorAll('#year').forEach(year => {
@@ -54,7 +54,8 @@ async function downloadReport(e){
         var a = document.createElement('a');
         a.href = response.data.fileUrl;
         a.download = "temp.csv"
-        a.click();
+        await a.click();
+        
     }else{
         alert("Some Error Occured Try After Some time")
     }

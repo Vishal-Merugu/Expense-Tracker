@@ -6,11 +6,12 @@ dotenv.config()
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
 
-const authenticate = (req, res, next) => {
+const authenticate =async (req, res, next) => {
     try{
         // const token = req.header('Authorization');
         const token = req.headers["authorization"]
-        const user = jwt.verify(token, JWT_SECRET_KEY)
+        // console.log(req.headers);
+        const user =  jwt.verify(token, JWT_SECRET_KEY)
         userId = user.id
         User.findByPk(userId)
         .then((user) => {
@@ -22,7 +23,7 @@ const authenticate = (req, res, next) => {
     }
     catch(err){
         console.log(err);
-        return res.status(400).json({ success : false })
+        return res.status(400).json({ success : "Jwt err" })
     }
 }
 

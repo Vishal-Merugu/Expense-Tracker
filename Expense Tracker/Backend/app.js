@@ -33,13 +33,14 @@ app.use(morgan('combined', { stream : accessLogStream }))
 
 
 app.use('/user',userRoutes);
-app.use('/',expenseRoutes);
+app.use('/expenses',expenseRoutes);
 app.use('/purchase', purchaseRoutes);
 app.use('/premium', premiumRoutes);
 app.use('/password', passwordRoutes);
 
 app.use((req,res) => {
     const url = req.url
+    res.header('Content-Security-Policy', "img-src 'self'");
     res.sendFile(path.join(__dirname, `public/${url}`))
 })
 
