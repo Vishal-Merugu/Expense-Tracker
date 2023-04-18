@@ -7,6 +7,7 @@ const cors = require('cors');
 const sequelize = require('./util/database');
 const helmet = require('helmet');
 const morgan = require('morgan')
+const https = require('https')
 
 const User = require('./models/user');
 const Expense = require('./models/expense');
@@ -37,6 +38,10 @@ app.use('/purchase', purchaseRoutes);
 app.use('/premium', premiumRoutes);
 app.use('/password', passwordRoutes);
 
+app.use((req,res) => {
+    const url = req.url
+    res.sendFile(path.join(__dirname, `public/${url}`))
+})
 
 
 Expense.belongsTo(User, {constraints : true, onDelete : "CASCADE"});
