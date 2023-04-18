@@ -1,4 +1,4 @@
-const url = "http://localhost:3000"
+const url = "http://18.212.3.80:3000"
 
 
 const leaderboard = async () => {
