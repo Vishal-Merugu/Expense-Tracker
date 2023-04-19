@@ -32,7 +32,7 @@ app.use(morgan('combined', { stream : accessLogStream }))
 
 
 app.use('/user',userRoutes);
-app.use('/',expenseRoutes);
+app.use('/expenses',expenseRoutes);
 app.use('/purchase', purchaseRoutes);
 app.use('/premium', premiumRoutes);
 app.use('/password', passwordRoutes);

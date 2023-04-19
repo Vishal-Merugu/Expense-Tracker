@@ -14,7 +14,7 @@ exports.getExpense = async (req,res,next) => {
         const expenseId = req.params.expenseId;
         const expenses = await user.getExpenses({where : {id : expenseId }})
         const expense = expenses[0]
-        console.log(expense);
+        // console.log(expense);
         res.json(expense)
     }
     catch{
