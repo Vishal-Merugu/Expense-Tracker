@@ -1,5 +1,5 @@
 
-const url = "http://18.212.3.80:3000"
+const url = "http://50.16.231.162:3000"
 
 const Email = document.querySelector("#email");
 const Password =  document.querySelector("#password");
