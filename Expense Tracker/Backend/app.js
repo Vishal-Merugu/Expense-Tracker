@@ -5,7 +5,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const sequelize = require('./util/database');
-const helmet = require('helmet');
 const morgan = require('morgan')
 
 const User = require('./models/user');
@@ -27,7 +26,6 @@ const accessLogStream = fs.createWriteStream('access.log', { flags : 'a' })
 app.use(bodyParser.urlencoded({ extended : false }));
 app.use(bodyParser.json())
 app.use(cors())
-app.use(helmet())
 app.use(morgan('combined', { stream : accessLogStream }))
 
 
