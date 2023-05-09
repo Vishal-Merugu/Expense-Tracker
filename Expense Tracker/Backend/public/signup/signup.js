@@ -1,4 +1,4 @@
-const url = process.env.RENDER_URL
+const url = "https://expense-tracker-5h0p.onrender.com";
 
 const Name = document.querySelector("#name");
 const Email = document.querySelector("#email");

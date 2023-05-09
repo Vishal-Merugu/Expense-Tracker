@@ -1,4 +1,4 @@
-const url = process.env.RENDER_URL
+const url = "https://expense-tracker-5h0p.onrender.com";
 
 async function premiumOrNot(){
     const response = await axios.get(`${url}/user/isPremium`,config)
