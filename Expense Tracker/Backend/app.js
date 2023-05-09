@@ -1,4 +1,4 @@
-const path = require('./util/path')
+const path = require('path')
 const fs = require('fs')
 
 const express = require('express');
@@ -37,7 +37,14 @@ app.use('/purchase', purchaseRoutes);
 app.use('/premium', premiumRoutes);
 app.use('/password', passwordRoutes);
 
-
+app.use((req,res) => {
+    let url = req.url
+    res.header('Content-Security-Policy', "img-src 'self'");
+    if(url == "/"){
+        url = "index.html"
+    }
+    res.sendFile(path.join(__dirname, `public/${url}`))
+})
 
 Expense.belongsTo(User, {constraints : true, onDelete : "CASCADE"});
 User.hasMany(Expense)
