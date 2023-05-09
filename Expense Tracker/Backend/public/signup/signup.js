@@ -1,4 +1,4 @@
-const url = "http://localhost:3000"
+const url = process.env.RENDER_URL
 
 const Name = document.querySelector("#name");
 const Email = document.querySelector("#email");

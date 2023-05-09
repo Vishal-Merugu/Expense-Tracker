@@ -1,4 +1,4 @@
-const url = 'http://localhost:3000'
+const url = process.env.RENDER_URL
 
 async function premiumOrNot(){
     const response = await axios.get(`${url}/user/isPremium`,config)
