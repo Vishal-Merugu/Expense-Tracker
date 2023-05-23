@@ -6,7 +6,7 @@ const authenticateUser = require('../middlewares/auth')
 
 const router = express.Router();
 
-// router.get('/', authenticateUser.authenticate,expenseController.getExpenses)
+router.get('/', authenticateUser.authenticate,expenseController.getExpenses)
 
 // router.get('/:expenseId', authenticateUser.authenticate,expenseController.getExpense)
 

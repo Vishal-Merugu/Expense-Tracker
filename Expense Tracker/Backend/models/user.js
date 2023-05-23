@@ -51,11 +51,14 @@ const userSchema = new Schema ({
 
 })
 
-userSchema.methods.addEx
-
-// userSchema.methods.getExpenses = function (){
-//     const expenses = this.expenses
-// }
+userSchema.methods.getExpenses = function(page,count){
+    const offset = ((page-1)*count);
+    const limit  = offset + count 
+    console.log(offset, limit);
+    const expenses = this.expenses.slice(offset,limit)
+    const totalExpenses = this.expenses.length;
+    return {expenses : expenses, totalExpenses : totalExpenses}
+}
 
 
 
