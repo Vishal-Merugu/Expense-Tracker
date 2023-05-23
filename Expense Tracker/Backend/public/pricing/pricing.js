@@ -1,4 +1,4 @@
-const url = "https://expense-tracker-5h0p.onrender.com";
+const url = "http://localhost:3000";
 
 async function premiumOrNot(){
     const response = await axios.get(`${url}/user/isPremium`,config)

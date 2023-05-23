@@ -10,8 +10,8 @@ router.post('/signup',userController.postSignUp);
 
 router.post('/login',userController.postLogin)
 
-router.get('/isPremium',authenticatUser.authenticate, userController.getPremium);
+// router.get('/isPremium',authenticatUser.authenticate, userController.getPremium);
 
-router.get('/filesdownloaded', authenticatUser.authenticate, userController.getFilesDownloaded);
+// router.get('/filesdownloaded', authenticatUser.authenticate, userController.getFilesDownloaded);
 
 module.exports = router;

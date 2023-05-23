@@ -12,7 +12,7 @@ const authenticate = (req, res, next) => {
         const token = req.headers["authorization"]
         const user = jwt.verify(token, JWT_SECRET_KEY)
         userId = user.id
-        User.findByPk(userId)
+        User.findById(userId)
         .then((user) => {
             req.user = user;
             next()

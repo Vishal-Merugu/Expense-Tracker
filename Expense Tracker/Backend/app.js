@@ -1,17 +1,13 @@
 const path = require('path')
 const fs = require('fs')
 
+const mongoose = require('mongoose')
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const sequelize = require('./util/database');
 const morgan = require('morgan')
-
-const User = require('./models/user');
-const Expense = require('./models/expense');
-const Order = require("./models/order");
-const ForgotPasswordRequest = require("./models/forgotPassword");
-const FilesDownloaded = require('./models/filesdownloaded');
 
 const userRoutes = require('./routes/user')
 const expenseRoutes = require('./routes/expense');
@@ -21,12 +17,12 @@ const passwordRoutes = require('./routes/password');
 
 const app = express();
 
-const accessLogStream = fs.createWriteStream('access.log', { flags : 'a' })
+// const accessLogStream = fs.createWriteStream('access.log', { flags : 'a' })
 
 app.use(bodyParser.urlencoded({ extended : false }));
 app.use(bodyParser.json())
 app.use(cors())
-app.use(morgan('combined', { stream : accessLogStream }))
+// app.use(morgan('combined', { stream : accessLogStream }))
 
 
 app.use('/user',userRoutes);
@@ -44,18 +40,17 @@ app.use((req,res) => {
     res.sendFile(path.join(__dirname, `public/${url}`))
 })
 
-Expense.belongsTo(User, {constraints : true, onDelete : "CASCADE"});
-User.hasMany(Expense)
-User.hasMany(Order)
-Order.belongsTo(User, {constraints : true, onDelete : "CASCADE"});User.hasMany(ForgotPasswordRequest);
-ForgotPasswordRequest.belongsTo(User);
-User.hasMany(FilesDownloaded);
-FilesDownloaded.belongsTo(User)
+const DB_USERNAME = process.env.DB_USERNAME;
+const DB_PASSWORD = process.env.DB_PASSWORD;
+const DB_NAME = process.env.DB_NAME;
 
-sequelize
-// .sync({force : true})
-.sync()
-.then(result => {
-    app.listen(process.env.PORT || 3000)
-})
-.catch(err => console.log(err))
+
+mongoose
+  .connect(`mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@${DB_NAME}.m9hkv2n.mongodb.net/expenseTracker?retryWrites=true&w=majority`)
+    .then(() => {
+    app.listen(3000)
+    console.log("Server Connected to PORT 3000");
+    })
+    .catch(err => {
+        console.log(err);
+    })

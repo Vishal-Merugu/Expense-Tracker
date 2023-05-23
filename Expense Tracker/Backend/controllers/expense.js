@@ -23,32 +23,22 @@ exports.getExpense = async (req,res,next) => {
 }
 
 exports.postExpense = async (req,res,next) => {
-    const t = await sequelize.transaction()
     try{
         const user = req.user
         const { amount, expense, description, category } = req.body;
-
-        const newExpense = await user.createExpense({
+        
+        const newExpense = await  user.expenses.push({
             amount : amount,
             expense : expense,
             description : description,
             category : category,
-        },{ transaction : t })
-
-        const totalExpenses = +user.totalExpenses + +amount
-
-        await user.update({
-            totalExpenses :  totalExpenses
-        }, { transaction : t })
-
-        await t.commit()
-
+        })
+        user.totalExpenses = await  +user.totalExpenses + +amount
+        user.save()
         res.status(200).json(newExpense)
     }
     catch(err){
-        await t.rollback()
         res.status(400).json({ success : false })
-
         console.log(err);
     }
 }

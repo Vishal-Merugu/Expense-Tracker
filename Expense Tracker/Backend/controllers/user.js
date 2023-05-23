@@ -14,20 +14,22 @@ const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
 exports.postSignUp = async (req,res,next) => {
     try{
         const { name, email, phone, password } = req.body
-        const users = await User.findAll({where : { email : email }})
-        const user = users[0]
-        if(user){
+        const oldUser = await User.findOne({
+            email : email
+        })
+        if(oldUser){
             res.status(404).json({message : "User Already Exists !!"})
         }
         else{
             bcrypt.hash(password,saltRounds,async (err,hash) => {
-                 const user = await User.create({
+                const user = new User({
                     name : name,
                     email : email,
                     phone : phone,
                     password : hash,
                     totalExpenses : 0
                 })
+                await user.save()
                 res.status(200).send()      
             })
         }
@@ -46,8 +48,7 @@ exports.postLogin = async (req,res,next) => {
     try{
         const email = req.body.email;
         const password = req.body.password;
-        const users = await User.findAll({where : {email : email}})
-        const user = users[0];
+        const user = await User.findOne({ email : email })
         if(!user){
             res.status(404).json({message : "User Not Found !!!"})
         }

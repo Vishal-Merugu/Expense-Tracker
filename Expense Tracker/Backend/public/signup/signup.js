@@ -1,4 +1,4 @@
-const url = "https://expense-tracker-5h0p.onrender.com";
+const url = "http://localhost:3000";
 
 const Name = document.querySelector("#name");
 const Email = document.querySelector("#email");
