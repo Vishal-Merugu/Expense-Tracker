@@ -74,7 +74,7 @@ async function editExpense(expenseId, newExpense){
 function showOutput(obj){
     const tr = document.createElement('tr');
     tr.title = obj.description;
-    tr.id = obj.id
+    tr.id = obj._id
 
     tr.innerHTML = `<td class = "text-center">${obj.expense}</td>
     <td class = "text-center">${obj.category}</td>
@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async ()=> {
             Expense.value = expense.expense;
             Description.value = expense.description;
             Category.value = expense.category
-            document.querySelector('#expenseId').value = expense.id
+            document.querySelector('#expenseId').value = expense._id
             document.getElementById(expenseId).remove()
         }
     }

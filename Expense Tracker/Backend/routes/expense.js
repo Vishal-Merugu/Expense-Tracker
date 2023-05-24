@@ -8,13 +8,13 @@ const router = express.Router();
 
 router.get('/', authenticateUser.authenticate,expenseController.getExpenses)
 
-// router.get('/:expenseId', authenticateUser.authenticate,expenseController.getExpense)
+router.get('/:expenseId', authenticateUser.authenticate,expenseController.getExpense)
 
 router.post('/expense', authenticateUser.authenticate,expenseController.postExpense);
 
-// router.delete('/:expenseId', authenticateUser.authenticate,expenseController.deleteExpense);
+router.delete('/:expenseId', authenticateUser.authenticate,expenseController.deleteExpense);
 
-// router.put('/:expenseId',authenticateUser.authenticate,expenseController.editExpense);
+router.put('/:expenseId',authenticateUser.authenticate,expenseController.editExpense);
 
 // router.get("/user/report", authenticateUser.authenticate, expenseController.getReport);
 

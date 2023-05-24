@@ -54,10 +54,20 @@ const userSchema = new Schema ({
 userSchema.methods.getExpenses = function(page,count){
     const offset = ((page-1)*count);
     const limit  = offset + count 
-    console.log(offset, limit);
     const expenses = this.expenses.slice(offset,limit)
     const totalExpenses = this.expenses.length;
     return {expenses : expenses, totalExpenses : totalExpenses}
+}
+
+userSchema.methods.deleteExpense = function (expenseId) {
+    this.expenses = this.expenses.filter(expense => {
+        if(expense._id != expenseId){
+            return expense
+        }else{
+            this.totalExpenses -= expense.amount
+        }  
+    })
+    return this.save()
 }
 
 
