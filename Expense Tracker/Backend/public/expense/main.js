@@ -48,7 +48,10 @@ async function deleteExpense(id){
     try{
         const token = localStorage.getItem("token")
         document.getElementById(id).remove()
+        const currentPage = CurrentPage.textContent;
+        const rowsPerPage = localStorage.getItem('rowsPerPage')
         const response = await axios.delete(`${url}/expenses/${id}`,{headers : { "Authorization" : token}});
+        getExpenses( +currentPage, +rowsPerPage);
     }
     catch(err){
         console.log(err);

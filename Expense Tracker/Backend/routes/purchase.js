@@ -6,9 +6,9 @@ const authenticateUser = require('../middlewares/auth')
 
 const purchaseControllers = require('../controllers/purchase');
 
-// router.get("/premiumMembership",authenticateUser.authenticate, purchaseControllers.purchasePremium )
+router.get("/premiumMembership",authenticateUser.authenticate, purchaseControllers.purchasePremium )
 
-// router.post('/updateTransaction', authenticateUser.authenticate, purchaseControllers.updateTransaction)
+router.post('/updateTransaction', authenticateUser.authenticate, purchaseControllers.updateTransaction)
 
 
 

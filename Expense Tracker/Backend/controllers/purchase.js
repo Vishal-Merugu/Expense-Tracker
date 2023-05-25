@@ -19,10 +19,12 @@ exports.purchasePremium = async (req,res,next) => {
             amount : amount,
             currency : "INR"
         })
-        const createOrder =  await user.createOrder({
+        const newOrder = new Order({
             orderId : order.id,
-            status : "PENDING"
+            status : "PENDING",
+            userId : user._id
         })
+        newOrder.save()
         return res.status(201).json({order_id : order.id, key_id : rzp.key_id}) 
     }
     catch(err){
@@ -44,21 +46,18 @@ exports.updateTransaction =  async (req,res,next) => {
             isPremium = true
         }
 
-        const order = await Order.findOne({ where : { orderId : order_id } })
+        const order = await Order.findOne({  orderId : order_id } )
 
-        const updateOrder =  order.update({ paymentId : payment_id, status : status })
+        //update order
+        order.paymentId = payment_id;
+        order.status = status;
+        await order.save()
 
-        const updateUserPremium = user.update({ isPremium : isPremium })
+        //update isPremium of
+        user.isPremium = isPremium;
+        await user.save()
 
-        Promise.all([updateOrder, updateUserPremium])
-        .then(()=>{
-            if(status){
-                return res.status(202).json({ success : true, message : "Transaction Successful"})
-            }else{
-                return res.status(400).json({ success : false, message : "Transaction Failed"})
-            }
-        })
-
+        return res.status(202).json({ success : true, message : "Transaction Successful"})
     }
     catch(err){
         console.log(err);
