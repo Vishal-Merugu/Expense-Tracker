@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const ForgotPasswordRequest = require("../models/forgotPassword");
+const ForgotPasswordRequest  = require("../models/forgotPassword");
 
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
@@ -8,10 +8,6 @@ const Sib = require("sib-api-v3-sdk");
 
 const dotenv =  require("dotenv");
 dotenv.config()
-
-const { v4: uuidv4 } = require('uuid')
-
-const sequelize = require('../util/database')
 
 exports.postForgotPassword = async (req,res,next) => {
    try {
@@ -24,16 +20,16 @@ exports.postForgotPassword = async (req,res,next) => {
         const tranEmailApi = new Sib.TransactionalEmailsApi();
         
         const email = req.body.email;
-        const uuid = await uuidv4()
-        const user = await User.findOne({ where : { email : email }})
+
+        const user = await User.findOne({  email : email })
         if(!user){
             throw new Error("user not found")
         }
-
-        const createuser = ForgotPasswordRequest.create({
-            id : uuid,
-            userId : user.id
+        const createRequest = await new ForgotPasswordRequest({
+            userId : user._id
         })
+        const id = createRequest._id
+        createRequest.save()
 
         const sender = {
             email : "buntymerugu0@gamil.com",
@@ -43,17 +39,16 @@ exports.postForgotPassword = async (req,res,next) => {
         const recievers = [{
                 email : `${email}`
             }]
-        const sendMail =  tranEmailApi.sendTransacEmail({
+        const sendMail =  await tranEmailApi.sendTransacEmail({
             sender,
             to : recievers,
             subject : "Reset Your Password",
             htmlContent : `<html><p>Click <a href = "http://localhost:3000/password/resetpassword/{{params.uuid}}">  here </a> to reset to password</p></html>`,
             params : {
-                uuid : uuid
+                uuid : id
             }
         })
 
-        Promise.all([createuser, sendMail])
         res.status(200).json({ success : true, message : "you chose to reset your password" })
     }
     catch(err){
@@ -66,8 +61,8 @@ exports.postForgotPassword = async (req,res,next) => {
 
 exports.getResetPassword = async (req,res,next) => {
     try{
-        const id  = req.params.uuid;
-        const forgotPasswordRequest = await ForgotPasswordRequest.findOne({ where : { id : id }})
+        const id  = req.params.id;
+        const forgotPasswordRequest = await ForgotPasswordRequest.findOne({ '_id' : id })
         const isActive = forgotPasswordRequest.isActive;
         if(isActive){
             res.set("id",id)
@@ -166,7 +161,7 @@ exports.getResetPassword = async (req,res,next) => {
             `)
         res.end()
         }else{
-            res.status('400').send("<h1>Link Expired</h1>")
+            res.status(400).send("<h1>Link Expired</h1>")
         }
     }
     catch(err){
@@ -175,31 +170,24 @@ exports.getResetPassword = async (req,res,next) => {
 }
 
 exports.postUpdatePassword = async (req,res,next) => {
-    const t = await sequelize.transaction()
     try{
-        const id = req.params.uuid;
+        const id = req.params.id;
         const newPassword = req.body.up
 
         bcrypt.hash(newPassword,saltRounds, async(err,hash)=>{
             try{
-                const forgotPasswordRequest = await ForgotPasswordRequest.findOne({ where : { id : id }})
-                await forgotPasswordRequest.update({
-                    isActive : false
-                },{ transaction : t })
-    
+                const forgotPasswordRequest = await ForgotPasswordRequest.findOne({ "_id" : id })
+                forgotPasswordRequest.isActive = false
+                await forgotPasswordRequest.save()
+
                 const userId = forgotPasswordRequest.userId
-                User.update({
-                    password : hash
-                },
-                {
-                    where :{
-                    id : userId
-                    }
-                },{ transaction : t })
-                await t.commit()
+                console.log(userId);
+                const user = await User.findById(userId)
+                user.password = hash
+                await user.save()
+
                 res.status(200).send("<h1>Password Changed Successfully</h1>")
             }catch(err){
-                await t.rollback()
                 res.status(400).send("<h1>Error Occured try someother time</h1>")
                 console.log(err);
             }
@@ -207,7 +195,6 @@ exports.postUpdatePassword = async (req,res,next) => {
     
     }
     catch(err){
-        await t.rollback()
         res.status(400).send("<h1>Error Occured try someother time</h1>")
         console.log(err);
     }

@@ -13,7 +13,7 @@ async function premiumOrNot(){
 premiumOrNot()
 
 document.addEventListener("DOMContentLoaded", async() =>{
-
+    
     document.querySelector('#rzp-button1').onclick = async (e) => {
         const response = await axios.get(`${url}/purchase/premiumMembership`, config)
 
@@ -46,7 +46,6 @@ document.addEventListener("DOMContentLoaded", async() =>{
             alert("Payment Failed");
         })
     }
-    
 
     
 })
