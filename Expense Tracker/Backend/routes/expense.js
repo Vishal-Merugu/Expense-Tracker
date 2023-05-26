@@ -16,8 +16,8 @@ router.delete('/:expenseId', authenticateUser.authenticate,expenseController.del
 
 router.put('/:expenseId',authenticateUser.authenticate,expenseController.editExpense);
 
-// router.get("/user/report", authenticateUser.authenticate, expenseController.getReport);
+router.get("/user/report", authenticateUser.authenticate, expenseController.getReport);
 
-// router.get('/user/downloadreport', authenticateUser.authenticate, expenseController.downloadReport);
+router.get('/user/downloadreport', authenticateUser.authenticate, expenseController.downloadReport);
 
 module.exports = router;

@@ -1,8 +1,8 @@
 const FilesDownloaded = require('../models/filesdownloaded');
+const user = require('../models/user');
 const s3Services = require('../services/s3services');
 let converter = require("json-2-csv");
 require('dotenv').config();
-
 
 
 exports.getExpense = async (req,res,next) => { 
@@ -94,60 +94,45 @@ exports.editExpense = async (req,res,next) => {
     }
 }
 
-// exports.getReport = async (req,res,next) => {
-//     try{
-//         const user = req.user;
-//         currentYear = new Date().getFullYear()
-    
-//         const yearlyExpenses = []
-    
-//         for(let month = 1; month <= 12; month++){
-//             let monthExpenses = await user.getExpenses({
-//                 attributes : ['amount', 'expense', 'category'],
-//                 where : sequelize.where(sequelize.fn('MONTH', sequelize.col('createdAt')), month),
-//                 and: sequelize.where(sequelize.fn('YEAR', sequelize.col('createdAt')), currentYear)
-//             })
-    
-//             let monthTotalExpense = 0
-//             if(monthExpenses){
-//                 monthExpenses.forEach(expense => {
-//                     monthTotalExpense += expense.amount
-//                 });
-//             }
-    
-//             yearlyExpenses.push({expenses : monthExpenses, monthTotalExpense : monthTotalExpense})
-//         }
-        
-//         res.json(yearlyExpenses)
-//     }
-//     catch(err){
-//         console.log(err);
-//     }
-// }
+exports.getReport = async (req,res,next) => {
+    try{
+        const user = req.user;
+        const yearlyExpenses = await user.getReport()
+        res.status(200).json(yearlyExpenses)
+    }
+    catch(err){
+        console.log(err);
+    }
+}
 
-// exports.downloadReport = async (req,res,next) => {
-//     try{
-//         const user = req.user;
-//         const expensesResponse = await user.getExpenses({
-//             attributes : ['expense', 'category', 'amount']
-//         });
-//         const expenses = []
-//         expensesResponse.forEach(expense => {
-//             expenses.push(expense.dataValues)
-//         })
-//         const csv = await converter.json2csv(expenses)
-//         const fileName = `Expense_${user.id}/${user.name}_Report_${new Date()}.csv`;
-//         const fileUrl = await s3Services.uploadTos3(csv,fileName);
-//         // console.log(fileUrl);
-//         await FilesDownloaded.create({
-//             fileurl : fileUrl,
-//             userId : user.id
-//         })
-//         res.status(200).json({ fileUrl, success : true })
-//     }
-//     catch(err){
-//         res.status(500).json({success : false, err : err})
-//         console.log(err);
-//     }
+exports.downloadReport = async (req,res,next) => {
+    try{
+        const user = req.user;
+        const expensesRaw = await user.expenses;
+        expenses = expensesRaw.map(expense => {
+            return {
+                expense : expense.expense,
+                category : expense.category,
+                description : expense.description,
+                price : expense.amount
+            }
+        })
 
-// }
+        const csv = await converter.json2csv(expenses)
+        const fileName = `Expense_${user.id}/${user.name}_Report_${new Date()}.csv`;
+        const fileUrl = await s3Services.uploadTos3(csv,fileName);
+        //test url
+        // const fileUrl = 'https://www.downloadexcelfiles.com/sites/default/files/docs/list_of_states_in_india-28j.csv'
+        const filesDownloaded = await new FilesDownloaded({
+            fileUrl : fileUrl,
+            userId : user._id
+        })
+        filesDownloaded.save()
+        res.status(200).json({ fileUrl, success : true })
+    }
+    catch(err){
+        res.status(500).json({success : false, err : err})
+        console.log(err);
+    }
+
+}

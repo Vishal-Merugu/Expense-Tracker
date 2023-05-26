@@ -10,7 +10,6 @@ dotenv.config();
 
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
 
-
 exports.postSignUp = async (req,res,next) => {
     try{
         const { name, email, phone, password } = req.body
@@ -78,11 +77,7 @@ exports.getPremium = (req,res,next) => {
 exports.getFilesDownloaded = async (req, res, next) => {
     try{
         const user = req.user;
-        const filesdownloaded = await FilesDownloaded.findAll({
-            where : {
-                userId : user.id
-            }
-        })
+        const filesdownloaded = await FilesDownloaded.find({ userId : user.id }).select('fileUrl date')
         res.status(200).json(filesdownloaded)
     }
     catch(err){

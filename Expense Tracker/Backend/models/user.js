@@ -35,6 +35,10 @@ const userSchema = new Schema ({
         category : {
             type : String,
             required : true
+        },
+        date : {
+            type : Date,
+            default : new Date()
         }
     }]
     ,
@@ -70,6 +74,24 @@ userSchema.methods.deleteExpense = function (expenseId) {
     return this.save()
 }
 
+userSchema.methods.getReport = async function (){
+    currentYear = new Date().getFullYear()
+
+    const yearlyExpenses = {}
+    const expenses = await this.expenses;
+    expenses.map(expense => {
+        let month = expense.date.getMonth() + 1 
+        if(!yearlyExpenses[month]){
+            yearlyExpenses[month] = { expenses : [expense] }
+            yearlyExpenses[month].totalExpense = expense.amount
+        }else {
+            yearlyExpenses[month].expenses.push(expense)
+            yearlyExpenses[month].totalExpense += expense.amount
+        }
+    })
+    
+    return yearlyExpenses
+}
 
 
 module.exports = mongoose.model('User', userSchema);

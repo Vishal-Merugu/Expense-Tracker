@@ -1,10 +1,11 @@
 const url =  "http://localhost:3000";
 
+const currDate = new Date()
 
 document.querySelectorAll('#year').forEach(year => {
-    year.innerHTML = new Date().getFullYear()
+    year.innerHTML = currDate.getFullYear()
 })
-document.querySelector('#month').innerHTML =getMonthName( new Date().getMonth()+1);
+document.querySelector('#month').innerHTML = getMonthName( currDate.getMonth()+1);
 
 document.querySelector('#download').onclick = downloadReport ;
 
@@ -19,32 +20,32 @@ handler();
 
     const report = await axios.get(`${url}/expenses/user/report`, config)
     
-    yearExpenses = report.data
+    yearlyExpenses = report.data
+    months = Object.keys(yearlyExpenses)
 
-    yearExpenses.forEach((monthExpense, index) => {
+    months.forEach((month) => {
             const tr = document.createElement('tr')
             tr.innerHTML = `
-            <td>${getMonthName(index+1)}</td>
-            <td>${monthExpense.monthTotalExpense}</td>`
+            <td>${getMonthName(month)}</td>
+            <td>${yearlyExpenses[month].totalExpense}</td>`
             document.querySelector('#yearlyreport').appendChild(tr)
     });
 
-    yearExpenses.forEach((expenses, index) => {
-        if(index == new Date().getMonth()){
-            const currentMonthExpense = expenses.expenses
-            currentMonthExpense.forEach((expense, i) => {
-                const tr = document.createElement('tr')
-                tr.innerHTML = `
-                <th>${i+1}</th>
-                <td>${expense.expense}</td>
-                <td>${expense.category}</td>
-                <td>${expense.amount}</td>
-                `
-                document.querySelector('#monthlyreport').appendChild(tr)
-            })
-            
-        }
-    })
+    const currMonth = currDate.getMonth() + 1
+    if(yearlyExpenses[currMonth]){
+        const currMonthExpenses = yearlyExpenses[currMonth].expenses
+        currMonthExpenses.forEach((expense, i) => {
+            const tr = document.createElement('tr')
+            tr.innerHTML = `
+            <th>${i+1}</th>
+            <td>${expense.expense}</td>
+            <td>${expense.category}</td>
+            <td>${expense.amount}</td>
+            `
+            document.querySelector('#monthlyreport').appendChild(tr)
+        })
+    } 
+
 }
 
 async function downloadReport(e){
@@ -77,9 +78,9 @@ async function showDownloadedFiles(){
         const tr = document.createElement('tr')
         tr.innerHTML = `
         <th scope="row">${index+1}</th>
-                  <td>${file.createdAt.slice(0,10)}</td>
+                  <td>${file.date.slice(0,19)}</td>
                   <td>
-                    <div class="button" id = ${file.fileurl}>
+                    <div class="button" id = ${file.fileUrl}>
                     <button class = "btn btn-dark btn-sm" type = "submit" id = "oldfiledownload">download</button>
                     </div>
                   </td>
